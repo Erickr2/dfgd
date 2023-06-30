@@ -1,0 +1,144 @@
+openapi: 3.0.1
+info:
+  title: API hexalud - Mutuus
+  description: Esta API se encarga de manejar la información de la base de datos hexalud mutuus.
+  version: 1.0.0
+
+servers:
+  - url: localhost:4001/api/
+tags:
+  - name: generarToken
+paths:
+  /generarToken:
+    post:
+      tags:
+      - generarToken
+      summary: Genera un nuevo token.
+      parameters:
+      - $ref: '#/components/parameters/token'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyTokenPost'
+        required: true
+      responses:
+        200:
+         description: (OK) credenciales correctas
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExitTokenPost' 
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+          
+  /createUser:
+    post: 
+      tags: 
+      - createUser
+      description: Este endpoint se encarga de registrar un usuario
+      summary: Crea un nuevo usuario dentro de la base de datos
+      parameters:
+      - $ref: '#/components/parameters/token'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyCreateUserPost'
+        required: true
+      responses:
+        200:
+         description: (OK) token valido
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExitCreateUserPost' 
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+      
+      
+components:
+  responses:
+   Unauthorized:
+      description: (Unauthorized) credenciales invalidas
+   NotFound:
+      description: (NotFound) no se encontro la informacion
+   BadRequest:
+      description: (BadRequest) las credenciales son incorrectas o hay datos obligatorios no enviados
+   ServerError:
+      description: Error en el servidor
+
+  
+  parameters:
+     token: 
+      in: header
+      description: Token de autenticación
+      required: true
+    
+  schemas:
+    BodyTokenPost:
+      type: object
+      properties:
+        usuario:
+         type: string
+         description: Nombre del usuario que solicita generar un nuevo token
+        contrasena: 
+         type: string
+         description: Contraseña del usuario que solicita generar un nuevo token
+    BodyCreateUserPost:
+      type: object
+      properties:
+        nombre:
+         type: string
+         description: Nombre del usuario 
+        apellidoP: 
+         type: string
+         description: apellido paterno del usuario
+        apellidoM: 
+         type: string
+         description: apellido materno del usuario
+        correo: 
+         type: string
+         description: correo electronico del usuario
+  
+    ExitTokenPost:
+     type: object
+     properties:
+       respuesta:
+         type: string
+         description: Bandera que nos indica si la llamada al servicio fue exitosa
+       tokenAturizacion: 
+          type: string
+          description: token que nos da acceso a los servicios del API
+          
+    ExitCreateUserPost:
+      type: object
+      properties:
+       mensaje:
+         type: string
+         description: Bandera que nos indica si se registro el usuario
+       correo: 
+          type: string
+          description: correo electronico del usuario
+       validacion:
+          type: integer
+          description: numero de validación
+          
+      
+        
+        
+        
+        
+        
